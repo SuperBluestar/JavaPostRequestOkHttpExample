@@ -2,9 +2,6 @@ package com.example.javapostwithokhttp;
 
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.util.Log;
@@ -20,21 +17,17 @@ import com.example.javapostwithokhttp.databinding.ActivityMainBinding;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import java.io.IOException;
-
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.OkHttpClient;
-import okhttp3.MediaType;
-import okhttp3.Request;
-import okhttp3.Response;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-
-import com.example.javapostwithokhttp.PostExample;
-
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
+import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,25 +50,51 @@ public class MainActivity extends AppCompatActivity {
         binding.fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                PostExample example = new PostExample();
-                String json = "{'phone': '+815055393757'}";
-                example.post("http://192.168.113.182:8000/phone_users/api", json, new Callback() {
+                HttpPostRequest.sendHttpPostRequest("http://192.168.113.182:8000/phone_users/api", "phone='%2B815055393758'", new HttpPostRequest.HttpPostCallback() {
                     @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    public void onSuccess(String response) {
+                        // Do something with the response
+                        System.out.println(response);
                         try {
-                            final String responseObj = new JSONObject(response.body().string()).getString("data");
+                            final String responseObj = new JSONObject(response).getString("data");
                             final String allowed = new JSONObject(responseObj).getString("allowed");
-                            Log.v("Success", allowed);
+                            if (allowed == "true") {
+                                Log.v("Success", "Allow");
+                            } else {
+                                Log.v("Success", "Denied");
+                            }
                         } catch (JSONException e) {
-                            Log.v("JsonError", e.getMessage() == null ? "Unknown error" : e.getMessage());
+                            Log.v("JsonError", e.getMessage() != null ? e.getMessage() : e.toString());
                         }
                     }
 
                     @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        Log.v("Error", e.getMessage() == null ? "Unknown error" : e.getMessage());
+                    public void onError(Exception e) {
+                        // Handle the error
+                        e.printStackTrace();
                     }
                 });
+
+
+//                PostExample example = new PostExample();
+//                String json = "{'phone': '+815055393757'}";
+//                example.post("http://192.168.113.182:8000/phone_users/api", json, new Callback() {
+//                    @Override
+//                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//                        try {
+//                            final String responseObj = new JSONObject(response.body().string()).getString("data");
+//                            final String allowed = new JSONObject(responseObj).getString("allowed");
+//                            Log.v("Success", allowed);
+//                        } catch (JSONException e) {
+//                            Log.v("JsonError", e.getMessage() == null ? "Unknown error" : e.getMessage());
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//                        Log.v("Error", e.getMessage() == null ? "Unknown error" : e.getMessage());
+//                    }
+//                });
             }
         });
 

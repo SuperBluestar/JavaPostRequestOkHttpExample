@@ -8,7 +8,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.javapostwithokhttp"
-        minSdk 28
+        minSdk 16
         targetSdk 33
         versionCode 1
         versionName "1.0"
@@ -42,8 +42,7 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
     // define a BOM and its version
-    implementation('com.squareup.okhttp3:okhttp-android:5.0.0-alpha.11')
-//    implementation(platform('com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11'))
+    //    implementation(platform('com.squareup.okhttp3:okhttp-bom:5.0.0-alpha.11'))
 //
 //    // define any required OkHttp artifacts without version
 //    implementation("com.squareup.okhttp3:okhttp")
